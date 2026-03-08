@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Smart Expense Tracker — kelola keuangan dengan mudah" />
+  <title>Smart Expense Tracker</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <h1>💰 Smart Expense Tracker</h1>
+      <p>Kelola keuangan Anda dengan lebih cerdas</p>
+    </header>
+
+    <!-- Dashboard -->
+    <section class="dashboard" aria-label="Ringkasan Keuangan">
+      <div class="card card-balance" role="status" aria-live="polite">
+        <div class="card-indicator">💵</div>
+        <div class="card-label">Total Saldo</div>
+        <div class="card-amount" id="totalBalance">Rp 0</div>
+      </div>
+      <div class="card card-income" role="status" aria-live="polite">
+        <div class="card-indicator">📈</div>
+        <div class="card-label">Total Pemasukan</div>
+        <div class="card-amount" id="totalIncome">Rp 0</div>
+      </div>
+      <div class="card card-expense" role="status" aria-live="polite">
+        <div class="card-indicator">📉</div>
+        <div class="card-label">Total Pengeluaran</div>
+        <div class="card-amount" id="totalExpense">Rp 0</div>
+      </div>
+    </section>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+
+      <!-- Form -->
+      <section class="panel" aria-label="Tambah Transaksi">
+        <h2>➕ Tambah Transaksi</h2>
+        <div class="type-toggle" role="group" aria-label="Tipe Transaksi">
+          <button type="button" class="type-btn expense" id="btnExpense" aria-pressed="true">📉 Pengeluaran</button>
+          <button type="button" class="type-btn income"  id="btnIncome"  aria-pressed="false">📈 Pemasukan</button>
+        </div>
+        <form id="transactionForm" novalidate>
+          <input type="hidden" id="txType" value="expense" />
+          <div class="form-group">
+            <label for="txTitle">Nama Transaksi</label>
+            <input type="text" id="txTitle" placeholder="Contoh: Beli Kopi, Gaji Bulanan"
+                   autocomplete="off" maxlength="80" aria-required="true" />
+            <div class="field-error" id="errTitle" role="alert">Nama transaksi wajib diisi.</div>
+          </div>
+          <div class="form-group">
+            <label for="txAmount">Nominal (Rp)</label>
+            <input type="text" id="txAmount" placeholder="0" inputmode="numeric"
+                   autocomplete="off" aria-required="true" />
+            <div class="field-error" id="errAmount" role="alert">Nominal harus lebih dari 0.</div>
+          </div>
+          <div class="form-group">
+            <label for="txDate">Tanggal</label>
+            <input type="date" id="txDate" aria-required="true" />
+            <div class="field-error" id="errDate" role="alert">Tanggal wajib diisi.</div>
+          </div>
+          <div class="form-group">
+            <label for="txCategory">Kategori</label>
+            <select id="txCategory" aria-required="true"></select>
+          </div>
+          <button type="button" class="btn-submit" id="btnSubmit">Simpan Transaksi</button>
+        </form>
+      </section>
+
+      <!-- History -->
+      <section class="panel" aria-label="Riwayat Transaksi">
+        <div class="history-header">
+          <h2 style="margin-bottom:0">📋 Riwayat</h2>
+          <div class="filter-row">
+            <label for="filterCategory" class="sr-only">Filter Kategori</label>
+            <select id="filterCategory">
+              <option value="all">Semua Kategori</option>
+              <option value="Food">Makanan</option>
+              <option value="Transport">Transportasi</option>
+              <option value="Salary">Gaji</option>
+              <option value="Utilities">Tagihan</option>
+              <option value="Entertainment">Hiburan</option>
+              <option value="Shopping">Belanja</option>
+              <option value="Health">Kesehatan</option>
+              <option value="Investment">Investasi</option>
+              <option value="Bonus">Bonus</option>
+              <option value="Other">Lainnya</option>
+            </select>
+            <label for="filterType" class="sr-only">Filter Tipe</label>
+            <select id="filterType">
+              <option value="all">Semua Tipe</option>
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
+            </select>
+            <label for="sortOrder" class="sr-only">Urutan</label>
+            <select id="sortOrder">
+              <option value="newest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+              <option value="highest">Tertinggi</option>
+              <option value="lowest">Terendah</option>
+            </select>
+            <button class="btn-export" id="btnExport" aria-label="Export ke CSV">⬇ CSV</button>
+          </div>
+        </div>
+        <ul class="tx-list" id="txList" aria-live="polite" aria-label="Daftar transaksi"></ul>
+        <div class="empty-state" id="emptyState" role="status">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0
+                 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+          <p>Belum ada transaksi.<br>Mulai tambahkan di formulir sebelah kiri.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Charts -->
+    <section class="chart-panel" aria-label="Grafik Distribusi">
+      <h2>📊 Distribusi per Kategori</h2>
+      <div class="charts-row">
+        <div class="chart-block">
+          <div class="chart-block-title expense">📉 Pengeluaran</div>
+          <div class="donut-wrap"><svg id="chartExpense" viewBox="0 0 200 200"></svg></div>
+          <table class="legend-table" id="legendExpense"></table>
+        </div>
+        <div class="chart-block">
+          <div class="chart-block-title income">📈 Pemasukan</div>
+          <div class="donut-wrap"><svg id="chartIncome" viewBox="0 0 200 200"></svg></div>
+          <table class="legend-table" id="legendIncome"></table>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /.container -->
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 id="modalTitle">⚠️ Konfirmasi Hapus</h3>
+      <p>Apakah Anda yakin ingin menghapus transaksi ini?<br>Tindakan ini tidak dapat dibatalkan.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="btnCancel">Batal</button>
+        <button class="btn-confirm" id="btnConfirm">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="toastContainer" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- JS modules — order matters -->
+  <script src="js/constants.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
