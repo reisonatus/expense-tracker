@@ -1,4 +1,4 @@
-# 💰 Smart Expense Tracker
+# 💰 Smart Expenses Tracker 
 
 Aplikasi pelacak keuangan pribadi berbasis HTML/CSS/JS murni — tanpa framework, tanpa build tools, tanpa dependensi eksternal.
 
